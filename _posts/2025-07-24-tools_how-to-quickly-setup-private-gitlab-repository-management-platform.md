@@ -68,21 +68,21 @@ services:
     image: 'gitlab/gitlab-ce:latest' # 或者是 gitlab-ce 版本
     container_name: 'gitlab'
     restart: always
-    hostname: 'gitlab.algs.tech'
+    hostname: 'gitlab.aoco.tech'
     ports:
       - '80:80'
       - '443:443'
       - '22:22'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'https://gitlab.algs.tech'
+        external_url 'https://gitlab.aoco.tech'
         nginx['ssl_certificate'] = "/etc/gitlab/ssl/cert.pem"
         nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/key.pem"
         gitlab_rails['ldap_enabled'] = true
         gitlab_rails['ldap_servers'] = YAML.load <<-EOS
           main:
             label: 'LDAP'
-            host: 'openldap.algs.tech'  # 替换为您的 LDAP 服务器地址
+            host: 'openldap.aoco.tech'  # 替换为您的 LDAP 服务器地址
             port: 389  # LDAP 端口
             uid: 'uid'  # LDAP 用户名属性
             bind_dn: 'cn=admin,dc=webcoding,dc=tech'  # LDAP 管理员 DN
@@ -116,13 +116,13 @@ services:
       - '$GITLAB_HOME/config:/etc/gitlab'
       - '$GITLAB_HOME/logs:/var/log/gitlab'
       - '$GITLAB_HOME/data:/var/opt/gitlab'
-      - '/etc/certs/ssl/algs.tech:/etc/gitlab/ssl'
+      - '/etc/certs/ssl/aoco.tech:/etc/gitlab/ssl'
     shm_size: '256m'
 ```
 
 ### 2. 配置 SSL 证书
 
-确保您已经拥有有效的 SSL 证书和密钥，将它们放置在 `/etc/certs/ssl/algs.tech/` 目录下，并且它们的权限设置正确。
+确保您已经拥有有效的 SSL 证书和密钥，将它们放置在 `/etc/certs/ssl/aoco.tech/` 目录下，并且它们的权限设置正确。
 
 ### 3. 启动 GitLab
 
@@ -136,7 +136,7 @@ docker-compose up -d
 
 ## 访问 GitLab
 
-1. 打开浏览器并访问 `https://gitlab.algs.tech`。
+1. 打开浏览器并访问 `https://gitlab.aoco.tech`。
 2. 默认情况下，GitLab 会要求您设置管理员密码。
 3. 使用您的管理员账号登录。
 

@@ -28,26 +28,26 @@ docker-compose.yml
 services:
   openldap:
     container_name: openldap
-    hostname: openldap.algs.tech
+    hostname: openldap.aoco.tech
     restart: always
     image: osixia/openldap:latest
     ports:
       - "389:389" # 暴露 LDAP 服务的 389 端口
     environment:
-      - LDAP_ORGANISATION="algs.tech" # 设置 LDAP 组织名称
-      - LDAP_DOMAIN=algs.tech         # 设置 LDAP 根域名
+      - LDAP_ORGANISATION="aoco.tech" # 设置 LDAP 组织名称
+      - LDAP_DOMAIN=aoco.tech         # 设置 LDAP 根域名
       - LDAP_ADMIN_PASSWORD=abc2024XYZ # 设置 LDAP 管理员密码
       - LDAP_TLS=false # 是否启用 TLS（false 表示不启用，便于测试）
     volumes:
       - /opt/ldap/local:/usr/local/ldap # 本地挂载目录，便于存储自定义内容
       - /opt/ldap/data:/var/lib/ldap # 存储 LDAP 数据的目录
       - /opt/ldap/slapd.d:/etc/ldap/slapd.d # 存储 OpenLDAP 配置文件的目录
-      - /etc/certs/ssl/algs.tech:/container/service/slapd/assets/certs # SSL 证书挂载目录
+      - /etc/certs/ssl/aoco.tech:/container/service/slapd/assets/certs # SSL 证书挂载目录
     command: [--copy-service,  --loglevel, warning] # 设置启动命令，减少日志冗余
 
   phpldapadmin:
     container_name: phpldapadmin
-    hostname: phpldapadmin.algs.tech
+    hostname: phpldapadmin.aoco.tech
     restart: always
     image: osixia/phpldapadmin:latest
     ports:
@@ -62,7 +62,7 @@ services:
 
   ssp-app:
     image: ltbproject/self-service-password
-    hostname: ssp.algs.tech
+    hostname: ssp.aoco.tech
     container_name: ssp-app
     restart: always
     volumes:
@@ -103,7 +103,7 @@ $debug = false; // 禁用调试模式
 // 密码修改成功提示
 $keyphrase = "scsdsicicsiccsd"; // 密码加密的密钥短语
 $messages['passwordchangedextramessage'] = "您的密码已成功更改！"; // 用户密码更改成功的提示信息
-$messages['changehelpextramessage'] = "如果遇到问题，请联系技术支持：support@algs.tech"; // 修改失败时的帮助信息
+$messages['changehelpextramessage'] = "如果遇到问题，请联系技术支持：support@aoco.tech"; // 修改失败时的帮助信息
 $default_action = "change"; // 默认操作为修改密码
 
 // 自定义界面配置
@@ -111,12 +111,12 @@ $background_image = "images/unsplash-sky.jpeg"; // 自定义背景路径
 // $logo = "images/custom/logo.png"; // 自定义 Logo 路径（如果需要）
 
 // 邮箱配置
-$reset_url = "http://ssp.algs.tech"; // 密码重置服务的 URL
+$reset_url = "http://ssp.aoco.tech"; // 密码重置服务的 URL
 $mail_address_use_ldap = true; // 从 LDAP 中获取用户邮箱
 $use_tokens = true; // 启用令牌功能
 $token_lifetime = "3600"; // 令牌有效时间（单位：秒）
 $mail_smtp_secure = "ssl"; // 使用 SSL 加密
-$mail_from = "noreply@algs.tech"; // 发件人邮箱
+$mail_from = "noreply@aoco.tech"; // 发件人邮箱
 $mail_from_name = "自助密码重置平台"; // 发件人名称
 $mail_signature = ""; // 邮件签名
 $mail_sendmailpath = '/usr/sbin/sendmail';
@@ -125,7 +125,7 @@ $mail_smtp_debug = false; // 禁用 SMTP 调试
 $mail_debug_format = 'html'; // 使用 HTML 格式调试信息
 $mail_smtp_host = 'smtphz.qiye.163.com'; // SMTP 服务器地址
 $mail_smtp_auth = true; // 启用 SMTP 身份验证
-$mail_smtp_user = 'noreply@algs.tech'; // 发件邮箱账号
+$mail_smtp_user = 'noreply@aoco.tech'; // 发件邮箱账号
 $mail_smtp_pass = 'password'; // 发件邮箱密码
 $mail_smtp_port = 465; // SMTP 端口（465 表示 SSL）
 $mail_smtp_timeout = 5; // 超时时间（单位：秒）

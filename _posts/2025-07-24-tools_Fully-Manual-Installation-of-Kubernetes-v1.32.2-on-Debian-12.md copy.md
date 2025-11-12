@@ -2012,7 +2012,7 @@ kube-system   traefik      NodePort    10.96.71.38   <none>        80:58180/TCP,
 
 ### 14.2 配置负载均衡
 
-我们在`k8s-101`、`k8s-102`节点上分别创建了nginx服务，现在我们将流量转发到这2个工作节点上，假设我们的业务服务器是`algs.tech`，在`nginx`服务器添加以下配置
+我们在`k8s-101`、`k8s-102`节点上分别创建了nginx服务，现在我们将流量转发到这2个工作节点上，假设我们的业务服务器是`aoco.tech`，在`nginx`服务器添加以下配置
 
 ```ini
 upstream traefik_dashboard {
@@ -2021,7 +2021,7 @@ upstream traefik_dashboard {
 }
 
 server {
-    server_name traefik.algs.tech;
+    server_name traefik.aoco.tech;
 
     location / {
         proxy_pass http://traefik_dashboard;
@@ -2037,7 +2037,7 @@ upstream traefik_http {
 }
 
 server {
-    server_name *.algs.tech;
+    server_name *.aoco.tech;
     listen 80;
 
     location / {
@@ -2053,12 +2053,12 @@ upstream traefik_https {
 }
 
 server {
-    server_name *.algs.tech;
+    server_name *.aoco.tech;
     listen 443 ssl;
 
     # ssl证书
-    ssl_certificate /etc/certs/ssl/algs.tech/fullchain.pem;
-    ssl_certificate_key /etc/certs/ssl/algs.tech/key.pem;
+    ssl_certificate /etc/certs/ssl/aoco.tech/fullchain.pem;
+    ssl_certificate_key /etc/certs/ssl/aoco.tech/key.pem;
     ssl_session_timeout     5m;
     
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -2074,7 +2074,7 @@ server {
 }
 ```
 
-在以上配置中，我们把`traefik.algs.tech`的请求转发到traefik的控制面板。同时，我们把`*.algs.tech`的所有80端口和443端口的流量转发到集群对应的traefik服务，由traefik来调度，后续发布服务我们只需要配置好 `ingress` 资源即可。
+在以上配置中，我们把`traefik.aoco.tech`的请求转发到traefik的控制面板。同时，我们把`*.aoco.tech`的所有80端口和443端口的流量转发到集群对应的traefik服务，由traefik来调度，后续发布服务我们只需要配置好 `ingress` 资源即可。
 
 至此，集群的核心组件和核心插件已经全部安装完毕。
 
@@ -2158,7 +2158,7 @@ metadata:
   name: whoami-ingress
 spec:
   rules:
-  - host: nginx.algs.tech
+  - host: nginx.aoco.tech
     http:
       paths:
       - path: /
@@ -2182,4 +2182,4 @@ kubectl apply -f whoami.yml \
 
 执行以上命令之后，k8s将会拉取 nginx 的镜像，并按我们指定的配置去启动服务。
 
-启动完成之后，我们在自己的桌面操作系统的电脑上将`nginx.algs.tech`域名解析到在前面通过 `keepalived` 创建的虚拟IP `192.168.122.100`，再使用浏览器访问域名，就顺利访问到了nginx的首页了。
+启动完成之后，我们在自己的桌面操作系统的电脑上将`nginx.aoco.tech`域名解析到在前面通过 `keepalived` 创建的虚拟IP `192.168.122.100`，再使用浏览器访问域名，就顺利访问到了nginx的首页了。

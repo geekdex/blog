@@ -19,7 +19,7 @@ timezone: Asia/Shanghai
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Algs Tech                          # the main title
+title: Aoco Tech                          # the main title
 
 tagline: 在探索未知与梦想的道路上，让我们拥有共同的称呼 -- 开发者   # it will display as the sub-title
 
@@ -27,22 +27,22 @@ description: >-                        # used by seo meta and the atom feed
   我一直认为，自己是一个热爱技术，走在技术成长之路上的人，在这条路上，我遇到过很多启发和见解，它们就像来自四面八方的光，给人以启迪。而我，借由成长阅历也沉淀出自己对技术的观点，并愿意给大家分享。我希望搭建这样一个平台，用一种便利、无偿的方式，表达它们。我希望把我所知道的和我想说的都分享给大家。我想很务实、很负责、也很有兴趣地分享技术知识和职业心得。我相信，助人者自助。
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
-url: 'https://algs.tech'
+url: 'https://aoco.tech'
 
 github:
-  username: phyuany             # change to your github username
+  username: panhyuan             # change to your github username
 
 twitter:
-  username: phyuany            # change to your twitter username
+  username: panhyuan            # change to your twitter username
 
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: algs.tech
-  email: phyuany@foxmail.com             # change to your email address
+  name: aoco.tech
+  email: pan.hy@foxmail.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://algs.tech      # change to your twitter homepage
+    - https://aoco.tech      # change to your twitter homepage
     - https://space.bilibili.com/172353353       # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
@@ -97,7 +97,7 @@ comments:
     issue_term:   # < url | pathname | title | ...>
   # Giscus options › https://giscus.app
   giscus:
-    repo: 'phyuany/algs.tech'              # <gh-username>/<repo>
+    repo: 'panhyuan/aoco.tech'              # <gh-username>/<repo>
     repo_id: 'R_kgDOIyxhcQ'
     category: 'General'
     category_id: 'DIC_kwDOIyxhcc4CUhya'
