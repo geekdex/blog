@@ -103,7 +103,7 @@ virt-install \
 
 - `--ram`: 内存大小（MB）。
 - `--disk`: 虚拟磁盘路径和大小（GB）。
-- `--os-variant`: 通过 `osinfo-query os` 查看支持的系统变体。
+- `--os-variant`: 通过 `osinfo-query os` 查看支持的系统变体，通过 `apt install libosinfo-bin osinfo-db` 安装。
 - `--network`: 使用默认的 NAT 网络 virbr0，或替换为其他桥接网络。
 
 --os-variant 是推荐使用的参数，用于为虚拟机启用针对特定操作系统的优化（如时钟设置、磁盘控制器等）。
