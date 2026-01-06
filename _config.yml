@@ -30,10 +30,10 @@ description: >-                        # used by seo meta and the atom feed
 url: 'https://blog.algs.tech'
 
 github:
-  username: ilabx             # change to your github username
+  username: geekdex             # change to your github username
 
 # twitter:
-#   username: ilabx            # change to your twitter username
+#   username: geekdex            # change to your twitter username
 
 social:
   # Change to your full name.
@@ -97,7 +97,7 @@ comments:
     issue_term:   # < url | pathname | title | ...>
   # Giscus options › https://giscus.app
   giscus:
-    repo: 'ilabx/blog'              # <gh-username>/<repo>
+    repo: 'geekdex/blog'              # <gh-username>/<repo>
     repo_id: 'R_kgDOIyxhcQ'
     category: 'General'
     category_id: 'DIC_kwDOIyxhcc4CUhya'
