@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="zh-CN" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover" ><meta name="generator" content="Jekyll v4.4.1" /><meta property="og:title" content="使用kubeadm快速搭建k8s集群" /><meta property="og:locale" content="zh_CN" /><meta name="description" content="一、概述" /><meta property="og:description" content="一、概述" /><link rel="canonical" href="https://blog.algs.tech/posts/kubernetes_basic_build-on-virtual-machine.html" /><meta property="og:url" content="https://blog.algs.tech/posts/kubernetes_basic_build-on-virtual-machine.html" /><meta property="og:site_name" content="极客开发者-博客" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2023-02-01T19:59:00+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="使用kubeadm快速搭建k8s集群" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-01T19:59:00+08:00","datePublished":"2023-02-01T19:59:00+08:00","description":"一、概述","headline":"使用kubeadm快速搭建k8s集群","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.algs.tech/posts/kubernetes_basic_build-on-virtual-machine.html"},"url":"https://blog.algs.tech/posts/kubernetes_basic_build-on-virtual-machine.html"}</script><title>使用kubeadm快速搭建k8s集群 | 极客开发者-博客</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="极客开发者-博客"><meta name="application-name" content="极客开发者-博客"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="/assets/dist/fonts/main.css"><link rel="stylesheet" href="/assets/dist/bootstrap.min.css"><link rel="stylesheet" href="/assets/dist/fontawesome.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="/assets/lib/tocbot/tocbot.min.css"><link rel="stylesheet" href="/assets/dist/magnific-popup.min.css"> <script src="/assets/dist/jquery.min.js"></script> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get MODE_ATTR() { return "data-mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } static get ID() { return "mode-toggle"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } let self = this; /* always follow the system prefers */ this.sysDarkPrefers.addEventListener('change', () => { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.notify(); }); } /* constructor() */ get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; } get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer)) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } setDark() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_ATTR); sessionStorage.removeItem(ModeToggle.MODE_KEY); } /* Notify another plugins that the theme mode has changed */ notify() { window.postMessage({ direction: ModeToggle.ID, message: this.modeStatus }, "*"); } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.notify(); } /* flipMode() */ } /* ModeToggle */ const modeToggle = new ModeToggle(); </script><body data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" class="mx-auto"> <img src="/img/about/avatar.jpeg" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title"> <a href="/">极客开发者-博客</a></div><div class="site-subtitle font-italic">在探索未知与梦想的道路上，让我们拥有共同的称呼 -- 开发者</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>首页</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>分类</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>标签</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>归档</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>关于</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <button class="mode-toggle btn" aria-label="Switch Mode"> <i class="fas fa-adjust"></i> </button> <span class="icon-border"></span> <a href="https://github.com/geekdex" aria-label="github" target="_blank" rel="noopener noreferrer"> <i class="fab fa-github"></i> </a> <a href="javascript:location.href = 'mailto:' + ['pan.hy','foxmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper"><div id="topbar" class="container d-flex align-items-center justify-content-between h-100 pl-3 pr-3 pl-md-4 pr-md-4"> <span id="breadcrumb"> <span> <a href="/"> 首页 </a> </span> <span>使用kubeadm快速搭建k8s集群</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> 文章</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="搜索..."> </span> <span id="search-cancel" >取消</span></div></div><div id="main-wrapper" class="d-flex justify-content-center"><div id="main" class="container pl-xl-4 pr-xl-4"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-9 pr-xl-4"><div class="post pl-1 pr-1 pl-md-2 pr-md-2"><h1 data-toc-skip>使用kubeadm快速搭建k8s集群</h1><div class="post-meta text-muted"> <span> 发表于 <em class="" data-ts="1675252740" data-df="YYYY/MM/DD" data-toggle="tooltip" data-placement="bottom"> 2023/02/01 </em> </span> <span style="float: right;"> <a href="https://lab.aoco.tech/convert?url=https://raw.githubusercontent.com/geekdex/blog/refs/heads/main/_posts/2023-03-01-kubernetes_basic_build-on-virtual-machine.md" class="view-source" target="_blank" style="color: #2a5caa; text-decoration: none; font-weight: 500;"> 查看Codelabs </a> &nbsp;|&nbsp; <a href="https://github.com/geekdex/blog/blob/main/_posts/2023-03-01-kubernetes_basic_build-on-virtual-machine.md" class="view-source" target="_blank" style="color: #2a5caa; text-decoration: none; font-weight: 500;"> 查看源码 </a> </span><div class="d-flex justify-content-between"> <span> 作者 <em> <a href="https://blog.algs.tech">blog.algs.tech</a> </em> </span><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="2673 字"> <em>14 分钟</em>阅读</span></div></div></div><div class="post-content"><h2 id="一概述"><span class="mr-2">一、概述</span><a href="#一概述" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><h3 id="11-使用multipass搭建虚拟环境"><span class="mr-2">1.1 使用multipass搭建虚拟环境</span><a href="#11-使用multipass搭建虚拟环境" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>我们可以使用<code class="language-plaintext highlighter-rouge">multipass</code>来创建多台<code class="language-plaintext highlighter-rouge">Ubuntu Server</code>虚拟环境，作为Linux集群的环境。如果你不知道<code class="language-plaintext highlighter-rouge">multipass</code>这个虚拟化工具的使用方法，可以参考另一篇文章：<a href="https://blog.jkdev.cn/index.php/archives/326/">https://blog.jkdev.cn/index.php/archives/326/</a>。</p><h3 id="12-使用vagtrant搭建虚拟环境"><span class="mr-2">1.2 使用vagtrant搭建虚拟环境</span><a href="#12-使用vagtrant搭建虚拟环境" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>除了multipass，我们还可以使用<code class="language-plaintext highlighter-rouge">vagtrant</code>来创建Linux虚拟环境，<code class="language-plaintext highlighter-rouge">vagrant</code>的基本操作可以参考这篇文章：<a href="https://blog.jkdev.cn/index.php/archives/335/">https://blog.jkdev.cn/index.php/archives/335/</a>。</p><h3 id="13-使用virtualbox搭建虚拟环境"><span class="mr-2">1.3 使用VirtualBox搭建虚拟环境</span><a href="#13-使用virtualbox搭建虚拟环境" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>如果你不想用以上的两款工具，可以直接使用VirtualBox来创建你的虚拟环境，但直接使用VirtualBox操作会更加繁杂，所以更推荐使用multipass或者vagrant。</p><h3 id="14-目标"><span class="mr-2">1.4 目标</span><a href="#14-目标" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>本次我们将部署一个主（master、管理、控制）节点master1和两个工作（worker）节点worker1、worker2的集群。master1、worker1、worker2每个节点分配2个cpu、2G内存、10G硬盘。这是k8s要求的最低配置，但这些配置完全足够我们用以学习。</p><p>我们将使用multipass来搭建集群环境，下文是在虚拟环境中使用kubeadm搭建k8s集群搭建过程，在后续的文章中也会循序渐进地介绍k8s。</p><h2 id="二准备环境"><span class="mr-2">二、准备环境</span><a href="#二准备环境" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><h3 id="21-创建ubuntu1804虚拟机"><span class="mr-2">2.1 创建Ubuntu18.04虚拟机</span><a href="#21-创建ubuntu1804虚拟机" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>在撰写此文的时候，<code class="language-plaintext highlighter-rouge">ubuntu18.04</code>正处于其稳定的生命周期内，本次我们选择<code class="language-plaintext highlighter-rouge">ubuntu18.04</code>作为示例。分别创建2核cpu、10G硬盘、2G内存，名为master1、worker1、worker2三台虚拟机，如下命令</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>multipass launch <span class="nt">-c</span> 2 <span class="nt">-d</span> 10G <span class="nt">-m</span> 2G <span class="nt">-n</span> master1 18.04
+multipass launch <span class="nt">-c</span> 2 <span class="nt">-d</span> 10G <span class="nt">-m</span> 2G <span class="nt">-n</span> worker1 18.04
+multipass launch <span class="nt">-c</span> 2 <span class="nt">-d</span> 10G <span class="nt">-m</span> 2G <span class="nt">-n</span> worker2 18.04
+</pre></table></code></div></div><p>使用<code class="language-plaintext highlighter-rouge">multipass list</code>列出已创建的虚拟机列表，如下</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>pan@pandeMacBook-Pro ~ % multipass list
+Name                    State             IPv4             Image
+master1                 Running           192.168.64.4     Ubuntu 18.04 LTS
+worker1                 Running           192.168.64.5     Ubuntu 18.04 LTS
+worker2                 Running           192.168.64.6     Ubuntu 18.04 LTS
+</pre></table></code></div></div><p>创建虚拟机之后，我们需要记住IP与虚拟机的对应关系，再对虚拟机进行初始化操作，以下2.2、2.3的操作过程需要在所有主机上进行。</p><h3 id="22-修改root用户密码"><span class="mr-2">2.2 修改root用户密码</span><a href="#22-修改root用户密码" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>因为后面的操作都是使用<code class="language-plaintext highlighter-rouge">root</code>用户进行，下面我们先修改每一台主机的<code class="language-plaintext highlighter-rouge">root</code>用户密码，以master1为例，如下操作命令</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="c"># 进入虚拟机</span>
+multipass bash master1
+<span class="c"># 修改root密码</span>
+<span class="nb">sudo </span>passwd root
+<span class="c"># 修改密码之后，使用su命令切换root用户</span>
+su
+</pre></table></code></div></div><h3 id="23-关闭防火墙和iptables"><span class="mr-2">2.3 关闭防火墙和iptables</span><a href="#23-关闭防火墙和iptables" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>根据官方文档，防火墙和iptables可能会影响到k8s集群，所以我们都要关闭掉，如下命令</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="c"># 关闭防火墙</span>
+ufw disable
+<span class="c"># 关闭iptables</span>
+iptables <span class="nt">-P</span> INPUT ACCEPT
+iptables <span class="nt">-P</span> FORWARD ACCEPT
+iptables <span class="nt">-P</span> OUTPUT ACCEPT
+iptables <span class="nt">-F</span>
+</pre></table></code></div></div><h2 id="二安装docker与kubeadm"><span class="mr-2">二、安装docker与kubeadm</span><a href="#二安装docker与kubeadm" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>以下3.1、3.2、3.3的操作过程需要在所有主机上进行。</p><h3 id="31-安装与配置docker"><span class="mr-2">3.1 安装与配置docker</span><a href="#31-安装与配置docker" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>安装docker</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="c"># 安装阿里云docker镜像服务的GPG证书</span>
+curl <span class="nt">-fsSL</span> http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | <span class="nb">sudo </span>apt-key add -
+<span class="c"># 写入阿里云docker镜像服务软件源</span>
+add-apt-repository <span class="s2">"deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu </span><span class="si">$(</span>lsb_release <span class="nt">-cs</span><span class="si">)</span><span class="s2"> stable"</span>
+<span class="c"># 更新软件库</span>
+apt-get update
+<span class="c"># 查看可以安装的docke-ce版本</span>
+apt-cache madison docker-ce
+<span class="c"># 安装docker</span>
+apt-get <span class="nt">-y</span> <span class="nb">install </span>docker-ce<span class="o">=</span>5:20.10.17~3-0~debian-bullseye
+<span class="c"># 固定docker-ce版本</span>
+apt-mark hold docker-ce
+</pre></table></code></div></div><p>每个人都可以使用阿里云创建自己的镜像加速仓库，比如<code class="language-plaintext highlighter-rouge">https://g6ogy192.mirror.aliyuncs.com</code>就是我的个人镜像加速地址，但是你也可以使用，设置镜像仓库地址如下命令</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="c"># 创建配置目录</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> /etc/docker
+<span class="c"># 写入配置文件</span>
+<span class="nb">tee</span> /etc/docker/daemon.json <span class="o">&lt;&lt;-</span><span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+{
+  "registry-mirrors": ["https://g6ogy192.mirror.aliyuncs.com"],
+  "exec-opts": ["native.cgroupdriver=systemd"] 
+}
+</span><span class="no">EOF
+</span><span class="c"># 重新加载服务的配置文件</span>
+systemctl daemon-reload
+<span class="c"># 重启docker服务</span>
+systemctl restart docker
+</pre></table></code></div></div><h3 id="32-安装kubeadmkubeletkubectl"><span class="mr-2">3.2 安装kubeadm、kubelet、kubectl</span><a href="#32-安装kubeadmkubeletkubectl" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="c"># 安装阿里云k8s镜像服务的GPG证书</span>
+curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+<span class="c"># 添加阿里云k8s镜像源</span>
+<span class="nb">cat</span> <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh"> &gt; /etc/apt/sources.list.d/kubernetes.list
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+</span><span class="no">EOF
+</span><span class="c"># 更新软件库</span>
+apt-get update
+<span class="c"># 安装程序</span>
+apt-get <span class="nb">install</span> <span class="nt">-y</span> <span class="nv">kubelet</span><span class="o">=</span>1.18.0-00 <span class="nv">kubeadm</span><span class="o">=</span>1.18.0-00 <span class="nv">kubectl</span><span class="o">=</span>1.18.0-00
+<span class="c"># 固定版本</span>
+apt-mark hold kubelet kubeadm kubectl
+</pre></table></code></div></div><blockquote><p>需要注意的是：安装的<code class="language-plaintext highlighter-rouge">docker</code>版本要和<code class="language-plaintext highlighter-rouge">k8s</code>版本匹配，否则<code class="language-plaintext highlighter-rouge">k8s</code>可能出现无法驱动<code class="language-plaintext highlighter-rouge">docker</code>的情况，以上安装的<code class="language-plaintext highlighter-rouge">docker19.03</code>和<code class="language-plaintext highlighter-rouge">k8s1.18.0</code>是存在对应关系的，你可以通过查阅k8s官方文档的方式查看更多的对应关系。</p></blockquote><h3 id="33-集群镜像准备"><span class="mr-2">3.3 集群镜像准备</span><a href="#33-集群镜像准备" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>使用<code class="language-plaintext highlighter-rouge">kubeadm config images list</code>命令查看当前集群基础服务所需要的镜像，镜像版本会根据当前的系统环境（当前安装kubeadm的版本）而定，返回如下内容</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>k8s.gcr.io/kube-apiserver:v1.18.20
+k8s.gcr.io/kube-controller-manager:v1.18.20
+k8s.gcr.io/kube-scheduler:v1.18.20
+k8s.gcr.io/kube-proxy:v1.18.20
+k8s.gcr.io/pause:3.2
+k8s.gcr.io/etcd:3.4.3-0
+k8s.gcr.io/coredns:1.6.7
+</pre></table></code></div></div><p>但是由于国内正常访问不到<code class="language-plaintext highlighter-rouge">k8s.cgr.io</code>，可以替换阿里云镜像地址：<code class="language-plaintext highlighter-rouge">registry.aliyuncs.com/google_containers</code>，执行如下命令</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>docker pull registry.aliyuncs.com/google_containers/kube-apiserver:v1.18.20
+docker pull registry.aliyuncs.com/google_containers/kube-controller-manager:v1.18.20
+docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.18.20
+docker pull registry.aliyuncs.com/google_containers/kube-proxy:v1.18.20
+docker pull registry.aliyuncs.com/google_containers/pause:3.2
+docker pull registry.aliyuncs.com/google_containers/etcd:3.4.3-0
+docker pull registry.aliyuncs.com/google_containers/coredns:1.6.7
+</pre></table></code></div></div><p>接下来给镜像打标签，得到kubeadm需要的镜像</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>docker tag registry.aliyuncs.com/google_containers/kube-apiserver:v1.18.20 k8s.gcr.io/kube-apiserver:v1.18.20
+docker tag registry.aliyuncs.com/google_containers/kube-controller-manager:v1.18.20 k8s.gcr.io/kube-controller-manager:v1.18.20
+docker tag registry.aliyuncs.com/google_containers/kube-scheduler:v1.18.20 k8s.gcr.io/kube-scheduler:v1.18.20
+docker tag registry.aliyuncs.com/google_containers/kube-proxy:v1.18.20 k8s.gcr.io/kube-proxy:v1.18.20
+docker tag registry.aliyuncs.com/google_containers/pause:3.2 k8s.gcr.io/pause:3.2
+docker tag registry.aliyuncs.com/google_containers/etcd:3.4.3-0 k8s.gcr.io/etcd:3.4.3-0
+docker tag registry.aliyuncs.com/google_containers/coredns:1.6.7 k8s.gcr.io/coredns:1.6.7
+</pre></table></code></div></div><p>再删除掉从阿里云下载的镜像</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>docker rmi registry.aliyuncs.com/google_containers/kube-apiserver:v1.18.20
+docker rmi registry.aliyuncs.com/google_containers/kube-controller-manager:v1.18.20
+docker rmi registry.aliyuncs.com/google_containers/kube-scheduler:v1.18.20
+docker rmi registry.aliyuncs.com/google_containers/kube-proxy:v1.18.20
+docker rmi registry.aliyuncs.com/google_containers/pause:3.2
+docker rmi registry.aliyuncs.com/google_containers/etcd:3.4.3-0
+docker rmi registry.aliyuncs.com/google_containers/coredns:1.6.7
+</pre></table></code></div></div><h2 id="三k8s集群初始化"><span class="mr-2">三、k8s集群初始化</span><a href="#三k8s集群初始化" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><h3 id="31-初始化master节点"><span class="mr-2">3.1 初始化master节点</span><a href="#31-初始化master节点" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>在master1节点上执行初始化命令</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>kubeadm init <span class="nt">--apiserver-advertise-address</span><span class="o">=</span>192.168.64.4 <span class="nt">--service-cidr</span><span class="o">=</span>10.96.0.0/12 <span class="nt">--pod-network-cidr</span><span class="o">=</span>10.244.0.0/16  <span class="nt">--ignore-preflight-errors</span><span class="o">=</span>Swap
+</pre></table></code></div></div><p>参数说明</p><ul><li><code class="language-plaintext highlighter-rouge">--apiserver-advertise-address</code>：指定apiserver的服务IP，此处填写master1的IP地址，如果系统包含多个IP，必须选择外网IP（能与其他节点进行网络通信的IP）<li><code class="language-plaintext highlighter-rouge">--service-cidr</code>：k8s中service网络使用的网段<li><code class="language-plaintext highlighter-rouge">--pod-network-cidr</code>：k8s中pod网络使用的网段<li><code class="language-plaintext highlighter-rouge">--ignore-preflight-errors</code>：忽略swap报错</ul><p>初始化结果如下</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  <span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$HOME</span>/.kube
+  <span class="nb">sudo cp</span> <span class="nt">-i</span> /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
+  <span class="nb">sudo chown</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span>:<span class="si">$(</span><span class="nb">id</span> <span class="nt">-g</span><span class="si">)</span> <span class="nv">$HOME</span>/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run <span class="s2">"kubectl apply -f [podnetwork].yaml"</span> with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can <span class="nb">join </span>any number of worker nodes by running the following on each as root:
+
+kubeadm <span class="nb">join </span>192.168.64.4:6443 <span class="nt">--token</span> wkgukj.up6d3a8rng4ytyl0 <span class="se">\</span>
+    <span class="nt">--discovery-token-ca-cert-hash</span> sha256:d36346a3820781efd88ae3796a58e2fa139f411f9ddc9c1dc7c9c2add8da5cfb
+</pre></table></code></div></div><p>如果出现类似以上的提示信息，代表master节点初始化成功。以上信息提示我们要完成三个操作，并给出了相关提示：一是拷贝配置文件、二是部署pod的网络插件、三是将工作节点加入到集群中。</p><h3 id="32-拷贝配置文件"><span class="mr-2">3.2 拷贝配置文件</span><a href="#32-拷贝配置文件" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>根据初始化结果提示，我们执行以下命令，拷贝k8s的相关配置文件到用户的家目录，才能使master1上当前登录的用户正常操作集群</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># 创建配置用户的k8s文件目录</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$HOME</span>/.kube
+<span class="c"># 拷贝配置和修改所有者，我们本身使用root用户操作，不需要加sudo前缀</span>
+<span class="nb">cp</span> <span class="nt">-i</span> /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
+<span class="nb">chown</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span>:<span class="si">$(</span><span class="nb">id</span> <span class="nt">-g</span><span class="si">)</span> <span class="nv">$HOME</span>/.kube/config
+</pre></table></code></div></div><h3 id="33-配置集群网络"><span class="mr-2">3.3 配置集群网络</span><a href="#33-配置集群网络" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>在拷贝好k8s的配置文件到用户家目录之后，我们需要安装网络插件。本次我们使用<code class="language-plaintext highlighter-rouge">flannel</code>作为集群的网络插件，将<code class="language-plaintext highlighter-rouge">flannel</code>配置文件从github下载保存到master1，文件地址为： <a href="https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml">https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml</a>，在master1上将文件命名为<code class="language-plaintext highlighter-rouge">kube-flannel.yml</code>。</p><p>需要注意的是，如果我们的（虚拟）主机里存在多个IP，我们需要指定有效IP的网卡（如我们在vagrant里创建的虚拟机，第二个网卡才是有效IP，需要指定有效IP的网卡）。修改flannel资源清单文件，在<code class="language-plaintext highlighter-rouge">- --kube-subnet-mgr</code>后面加一条参数配置：<code class="language-plaintext highlighter-rouge">- --iface=网卡名</code>，如下</p><pre><code class="language-YML"># ...
+containers:
+      - name: kube-flannel
+       #image: flannelcni/flannel:v0.16.3 for ppc64le and mips64le (dockerhub limitations may apply)
+        image: rancher/mirrored-flannelcni-flannel:v0.16.3
+        command:
+        - /opt/bin/flanneld
+        args:
+        - --ip-masq
+        - --kube-subnet-mgr
+        - --iface=enp0s8
+# ...
+</code></pre><p>后执行以下命令创建k8s网络插件</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>kubectl apply <span class="nt">-f</span> kube-flannel.yml
+</pre></table></code></div></div><p>如看到包含<code class="language-plaintext highlighter-rouge">created</code>的如下类似信息，证明网络插件安装成功</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>namespace/kube-flannel created
+clusterrole.rbac.authorization.k8s.io/flannel created
+clusterrolebinding.rbac.authorization.k8s.io/flannel created
+serviceaccount/flannel created
+configmap/kube-flannel-cfg created
+daemonset.apps/kube-flannel-ds created
+</pre></table></code></div></div><h3 id="34-初始化集群工作节点"><span class="mr-2">3.4 初始化集群工作节点</span><a href="#34-初始化集群工作节点" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>初始化集群管理节点master1之后，我们可以将工作节点worker1和wroker2加入到集群中。将工作节点的初始化命令拷贝到worker1和worker2去执行，使集群的工作节点（worker1、worker2）和管理节点（master1）关联起来，如下命令</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>kubeadm <span class="nb">join </span>192.168.64.4:6443 <span class="nt">--token</span> wkgukj.up6d3a8rng4ytyl0 <span class="se">\</span>
+    <span class="nt">--discovery-token-ca-cert-hash</span> sha256:d36346a3820781efd88ae3796a58e2fa139f411f9ddc9c1dc7c9c2add8da5cfb
+</pre></table></code></div></div><p>在工作节点执行初始化命令之后，我们在管理节点master1使用<code class="language-plaintext highlighter-rouge">kubectl get pods --all-namespaces</code>查看结果，可以看到类似如下信息</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre>root@master1:/home/ubuntu# kubectl get pods <span class="nt">--all-namespaces</span>
+NAMESPACE     NAME                              READY   STATUS    RESTARTS   AGE
+kube-system   coredns-66bff467f8-pw9br          1/1     Running   0          13m
+kube-system   coredns-66bff467f8-wsj45          1/1     Running   0          13m
+kube-system   etcd-master1                      1/1     Running   0          14m
+kube-system   kube-apiserver-master1            1/1     Running   0          14m
+kube-system   kube-controller-manager-master1   1/1     Running   0          14m
+kube-system   kube-flannel-ds-c4jnh             1/1     Running   0          3m39s
+kube-system   kube-flannel-ds-rg58c             1/1     Running   0          3m14s
+kube-system   kube-flannel-ds-sw85v             1/1     Running   0          3m15s
+kube-system   kube-proxy-ddk88                  1/1     Running   0          3m15s
+kube-system   kube-proxy-dt825                  1/1     Running   0          13m
+kube-system   kube-proxy-jgm4h                  1/1     Running   0          3m14s
+kube-system   kube-scheduler-master1            1/1     Running   0          14m
+</pre></table></code></div></div><p>如果需要查看更多的信息（如所运行的宿主机），只需在原命令中追加<code class="language-plaintext highlighter-rouge">-o wide</code>参数即可。</p><p>需要注意的是，如果你的列表中显示的所有pod并不是处于Running状态，一般是正在从网络上下载资源，还没有完全启动服务，你需要等待一段时间。你在安装集群的过程中，最好处于一个优质的网络环境。如果你电脑配置允许，你还可以使用上文说明的操作步骤，添加更多的工作节点。</p><h3 id="35-重置k8s集群"><span class="mr-2">3.5 重置k8s集群</span><a href="#35-重置k8s集群" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>如果你在搭建过程中出现问题，如因为网络原因安装失败等，或者因为其他原因想重置k8s集群，可以使用以下的操作步骤</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="c"># 驱离工作节点的pod</span>
+kubectl drain worker1 <span class="nt">--delete-local-data</span> <span class="nt">--force</span> <span class="nt">--ignore-daemonsets</span>
+kubectl drain worker2 <span class="nt">--delete-local-data</span> <span class="nt">--force</span> <span class="nt">--ignore-daemonsets</span>
+<span class="c"># 删除工作节点</span>
+kubectl delete node worker1
+kubectl delete node worker2
+<span class="c"># 重置集群</span>
+kubeadm reset
+</pre></table></code></div></div><h2 id="四总结"><span class="mr-2">四、总结</span><a href="#四总结" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>以上是使用kubeadm快速搭建k8s集群的完整说明，或许你的安装会失败。原因可能是你的虚拟环境问题、也可能因为网络原因，或者是你操作错误。如果出现失败，你需要根据你的操作步骤认真分析并重试。</p><blockquote><p>作者wx订阅号：<strong>极客开发者</strong>，禁止转载</p></blockquote></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/kubernetes/'>kubernetes</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> 本文由作者按照 <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> 进行授权</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">分享</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=%E4%BD%BF%E7%94%A8kubeadm%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%20-%20%E6%9E%81%E5%AE%A2%E5%BC%80%E5%8F%91%E8%80%85-%E5%8D%9A%E5%AE%A2&url=https%3A%2F%2Fblog.algs.tech%2Fposts%2Fkubernetes_basic_build-on-virtual-machine.html" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=%E4%BD%BF%E7%94%A8kubeadm%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%20-%20%E6%9E%81%E5%AE%A2%E5%BC%80%E5%8F%91%E8%80%85-%E5%8D%9A%E5%AE%A2&u=https%3A%2F%2Fblog.algs.tech%2Fposts%2Fkubernetes_basic_build-on-virtual-machine.html" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https%3A%2F%2Fblog.algs.tech%2Fposts%2Fkubernetes_basic_build-on-virtual-machine.html&text=%E4%BD%BF%E7%94%A8kubeadm%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%20-%20%E6%9E%81%E5%AE%A2%E5%BC%80%E5%8F%91%E8%80%85-%E5%8D%9A%E5%AE%A2" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://service.weibo.com/share/share.php?title=%E4%BD%BF%E7%94%A8kubeadm%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%20-%20%E6%9E%81%E5%AE%A2%E5%BC%80%E5%8F%91%E8%80%85-%E5%8D%9A%E5%AE%A2&url=https%3A%2F%2Fblog.algs.tech%2Fposts%2Fkubernetes_basic_build-on-virtual-machine.html" data-toggle="tooltip" data-placement="top" title="Weibo" target="_blank" rel="noopener" aria-label="Weibo"> <i class="fa-fw fab fa-weibo"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="分享链接" data-title-succeed="链接已复制！"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-tags"><div class="panel-heading">热门标签</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/k8s/">k8s</a> <a class="post-tag" href="/tags/adb/">adb</a> <a class="post-tag" href="/tags/docker/">docker</a> <a class="post-tag" href="/tags/pingora/">Pingora</a> <a class="post-tag" href="/tags/posix/">POSIX</a> <a class="post-tag" href="/tags/%E5%8F%8C%E7%B3%BB%E7%BB%9F/">双系统</a> <a class="post-tag" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/">虚拟机</a> <a class="post-tag" href="/tags/android%E6%9D%83%E9%99%90/">android权限</a> <a class="post-tag" href="/tags/aosp/">aosp</a> <a class="post-tag" href="/tags/archlinux/">archlinux</a></div></div></div><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">文章内容</div><nav id="toc"></nav></div><script src="/assets/lib/tocbot/tocbot.min.js"></script></div></div><div class="row"><div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 pl-3 pr-3 pr-xl-4 mt-5"><div id="related-posts" class="mb-2 mb-sm-4"><h3 class="pt-2 mb-4 ml-1" data-toc-skip>相关文章</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/kubernetes_declaration.html"><div class="card-body"> <em class="small" data-ts="1675252680" data-df="YYYY/MM/DD" > 2023/02/01 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>kubernetes知识概述</h3><div class="text-muted small"><p> 一、概述 博客：https://jiker.dev 公众号：极客开发者 阅读对象：后端工程师、运维工程师、Linux爱好者、k8s爱好者 二、什么是k8s？ k8s本身涉及到大量的技术知识，包括操作系统、网络、存储、调度、分布式等方面的知识，这也正是技术人员学习与努力的方向。在这系列的文章，我们从了解Kubernetes的最基本的概念开始，先使用官方的kubeadm工具搭...</p></div></div></a></div><div class="card"> <a href="/posts/kubernetes_basic_conception.html"><div class="card-body"> <em class="small" data-ts="1675252800" data-df="YYYY/MM/DD" > 2023/02/01 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>k8s中的核心概念</h3><div class="text-muted small"><p> 本文将介绍k8s知识体系中，最常见的专业名词以及相关概念 一、Pod Pod是k8s中最小的逻辑单元，也叫做k8s的原子单元。一个Pod里可以运行多个容器，他们共享UTS命名空间（隔离Hostname和NIS域名）、共享NET命名空间（隔离网络设备、协议栈、端口等）、共享IPC命名空间（隔离进程间通信）。我们可以把Pod理解成豌豆荚，而同一个Pod内的每个容器是一颗颗豌豆。一个P...</p></div></div></a></div><div class="card"> <a href="/posts/kubernetes_basic_compoents.html"><div class="card-body"> <em class="small" data-ts="1675253100" data-df="YYYY/MM/DD" > 2023/02/01 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>k8s中的核心组件</h3><div class="text-muted small"><p> 一、主控制节点(master node) 1.1 apiserver 用于接收客户端操作k8s的指令。提供了REST API接口，包括鉴权、数据校验、集群状态变更等。负责各个模块之间的数据交互，承担通信枢纽功能。作为资源配额控制的入口，同时提供了完整的集群安全机制。 1.2 schduler 主要是调度pod到适合的运算节点上，通过预算策略（predict）和优选策略（priorit...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/kubernetes_declaration.html" class="btn btn-outline-primary" prompt="上一篇"><p>kubernetes知识概述</p></a> <a href="/posts/kubernetes_basic_conception.html" class="btn btn-outline-primary" prompt="下一篇"><p>k8s中的核心概念</p></a></div><script type="text/javascript"> $(function () { const origin = "https://giscus.app"; const iframe = "iframe.giscus-frame"; const lightTheme = "light"; const darkTheme = "dark_dimmed"; let initTheme = lightTheme; if ($("html[data-mode=dark]").length > 0 || ($("html[data-mode]").length == 0 && window.matchMedia("(prefers-color-scheme: dark)").matches)) { initTheme = darkTheme; } let giscusAttributes = { "src": "https://giscus.app/client.js", "data-repo": "geekdex/blog", "data-repo-id": "R_kgDOIyxhcQ", "data-category": "General", "data-category-id": "DIC_kwDOIyxhcc4CUhya", "data-mapping": "pathname", "data-reactions-enabled": "anonymous", "data-emit-metadata": "0", "data-theme": initTheme, "data-input-position": "0", "data-lang": "zh-CN", "crossorigin": "anonymous", "async": "" }; let giscusScript = document.createElement("script"); Object.entries(giscusAttributes).forEach(([key, value]) => giscusScript.setAttribute(key, value)); document.getElementById("tail-wrapper").appendChild(giscusScript); addEventListener("message", (event) => { if (event.source === window && event.data && event.data.direction === ModeToggle.ID) { /* global theme mode changed */ const mode = event.data.message; const theme = (mode === ModeToggle.DARK_MODE ? darkTheme : lightTheme); const message = { setConfig: { theme: theme } }; const giscus = document.querySelector(iframe).contentWindow; giscus.postMessage({ giscus: message }, origin); } }); }); </script></div></div></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">热门标签</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/k8s/">k8s</a> <a class="post-tag" href="/tags/adb/">adb</a> <a class="post-tag" href="/tags/docker/">docker</a> <a class="post-tag" href="/tags/pingora/">Pingora</a> <a class="post-tag" href="/tags/posix/">POSIX</a> <a class="post-tag" href="/tags/%E5%8F%8C%E7%B3%BB%E7%BB%9F/">双系统</a> <a class="post-tag" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/">虚拟机</a> <a class="post-tag" href="/tags/android%E6%9D%83%E9%99%90/">android权限</a> <a class="post-tag" href="/tags/aosp/">aosp</a> <a class="post-tag" href="/tags/archlinux/">archlinux</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><footer><div class="container pl-lg-4 pr-lg-4"><div class="d-flex justify-content-between align-items-center text-muted ml-md-3 mr-md-3"><div class="footer-left"><p class="mb-0"> © 2026 <a href="https://blog.algs.tech">blog.algs.tech</a>. <span data-toggle="tooltip" data-placement="top" title="除非另有说明，本网站上的博客文章均由作者按照知识共享署名 4.0 国际 (CC BY 4.0) 许可协议进行授权。">保留部分权利。</span></p></div><div class="footer-right"><p class="mb-0">本站由 <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> 生成，采用 <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> 主题。</p></div></div></div></footer><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a><div id="notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="false"><div class="toast-header"> <button type="button" class="ml-2 ml-auto close" data-dismiss="toast" aria-label="Close"> <span aria-hidden="true">&times;</span> </button></div><div class="toast-body text-center pt-0"><p class="pl-2 pr-2 mb-3">发现新版本的内容。</p><button type="button" class="btn btn-primary" aria-label="Update"> 更新 </button></div></div><script src="/assets/dist/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">搜索结果为空</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="/assets/dist/jquery.magnific-popup.min.js"></script> <script src="/assets/dist/lazysizes.min.js"></script> <script src="/assets/dist/clipboard.min.js"></script> <script src="/assets/dist/dayjs.min.js"></script> <script src="/assets/dist/locale/zh.min.js"></script> <script src="/assets/dist/relativeTime.min.js"></script> <script src="/assets/dist/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="/assets/dist/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script>
