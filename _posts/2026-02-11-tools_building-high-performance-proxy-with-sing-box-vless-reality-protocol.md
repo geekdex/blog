@@ -255,7 +255,7 @@ sing-box generate rand --hex 8
         {
             "type": "mixed",
             "tag": "mixed-in",
-            "listen": "0.0.0.0",
+            "listen": "::",
             "listen_port": 2334
         }
     ],
@@ -501,7 +501,9 @@ sudo sysctl -p
 
 ## 六、结语
 
-注意：请确保将配置文件中的 `UUID`、`Public_Key`、`Private_Key`、`Short_id` 以及 `Server_IP` 替换为你实际生成的值，同时示例配置的注释正式使用的时候要删除，避免破坏 JSON 的语法规则。
+注意: 请确保将配置文件中的 `UUID`、`Public_Key`、`Private_Key`、`Short_id` 以及 `Server_IP` 替换为你实际生成的值，同时示例配置的注释正式使用的时候要删除，避免破坏 JSON 的语法规则。
+
+建议: 如果自己的设备没有接入 `ipv6`，可以将 `dns.strategy` 修改为 `ipv4_only`，`inbounds` 下的 `tun` 类型去掉 `ipv6` 地址，避免出现潜在的逻辑混乱。
 
 这套配置的灵魂在于‘精准打击’。抛弃复杂的图形面板，回归最纯粹的 JSON 配置文件，你会发现 sing-box 强大的控制力。通过 `final: direct` 确保了国内流量的绝对纯净，而通过 `geosite-google` 和手动维护的规则集，实现了对海外核心服务的精确接管。这是一种‘保守但极其稳健’的配置方案，是一套值得长期使用并根据个人需求不断打磨的终极方案。
 
@@ -512,3 +514,4 @@ sudo sysctl -p
 
 所有 .srs 文件就是可用的 tag 名，文件名去掉 .srs 后缀就是 tag 值。
 
+> 更多精细化的控制可参考 sing-box 的配置文档: <https://sing-box.sagernet.org/configuration/>
