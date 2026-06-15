@@ -1,6 +1,6 @@
 ---
 title: 我用 sing-box 打造了一套极致精准的网络流量调度网关（全平台通用+策略路由）
-date: 2026-06-16 10:50:00 +0800
+date: 2026-06-06 10:50:00 +0800
 categories: [网络]
 tags: [网关]
 pin: false
@@ -88,7 +88,7 @@ route.rules 从上到下逐条匹配（遇到第一条命中的规则即停止�
 在你的远程服务器（VPS）上执行官方一键安装脚本：
 
 ```bash
-bash <(curl -fsSL [https://sing-box.app/install.sh](https://sing-box.app/install.sh))
+bash <(curl -fsSL https://sing-box.app/install.sh)
 
 ```
 
@@ -310,42 +310,42 @@ sing-box generate rand --hex 8
         "tag": "geosite-cn",
         "type": "remote",
         "format": "binary",
-        "url": "[https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs](https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs)",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
         "download_detour": "proxy"
       },
       {
         "tag": "geoip-cn",
         "type": "remote",
         "format": "binary",
-        "url": "[https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs](https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs)",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
         "download_detour": "proxy"
       },
       {
         "tag": "geosite-google",
         "type": "remote",
         "format": "binary",
-        "url": "[https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs](https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs)",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs",
         "download_detour": "proxy"
       },
       {
         "tag": "geosite-github",
         "type": "remote",
         "format": "binary",
-        "url": "[https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-github.srs](https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-github.srs)",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-github.srs",
         "download_detour": "proxy"
       },
       {
         "tag": "geosite-openai",
         "type": "remote",
         "format": "binary",
-        "url": "[https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-openai.srs](https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-openai.srs)",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-openai.srs",
         "download_detour": "proxy"
       },
       {
         "tag": "geosite-jetbrains",
         "type": "remote",
         "format": "binary",
-        "url": "[https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-jetbrains.srs](https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-jetbrains.srs)",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-jetbrains.srs",
         "download_detour": "proxy"
       }
     ],
